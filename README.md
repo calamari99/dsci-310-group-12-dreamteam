@@ -9,7 +9,7 @@ We attempt to build out a K-nearest neighbour classification model to predict a 
 The data is collected from: https://archive.ics.uci.edu/ml/datasets/Facebook+metrics
 
 ## Report
-The analysis report is attached [here](https://github.com/calamari99/dsci-310-group-12-dreamteam/blob/main/submission.ipynb).
+The analysis report is attached [here](https://github.com/calamari99/Facebook-Post-Predictor/blob/main/submission.ipynb).
 
 ## Usage
 
