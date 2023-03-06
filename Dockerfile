@@ -13,25 +13,30 @@ RUN apt-get update && \
     less \ 
     curl
 
+# create folder for scripts
+RUN mkdir -p /scripts
+
+# create folder for notebook
+RUN mkdir -p /notebooks
+
+#add script file to folder
+COPY /scripts/install_packages.R /scripts/install_packages.R 
+
+#copy jupyter notebook into folder
+COPY /notebooks/submission.ipynb /notebooks/submission.ipynb 
+
 #run r packages
-RUN Rscript /milestone1_load_packages.R
+RUN Rscript /scripts/install_packages.R 
 
 # RUN apt-get clean && rm -rf var/lib/apt/lists/*
-
-
-#mount volumes 
-RUN mkdir -p /opt/notebooks
-
 #create port
 EXPOSE 8888
-
-
 
 # #swap to jupyter user
 # USER $NB_UID
 
-#install r packages for jupyter file
-WORKDIR "/opt/notebooks"
+#working directory
+WORKDIR "/notebooks"
 
 
 
