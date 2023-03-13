@@ -2,6 +2,9 @@ r = getOption("repos")
 r["CRAN"] = "http://cran.us.r-project.org"
 options(repos = r)
 
+#list of packages
+install.packages("renv")
+install.packages("IRKernel")
 install.packages("caTools")
 install.packages("tidyverse")
 install.packages("repr")

@@ -3,7 +3,10 @@ FROM jupyter/datascience-notebook:r-4.0.3
 USER root
 
 #install jupyter lab git extension
-RUN pip install jupyterlab-git
+RUN conda install jupyterlab-git
+
+#install conda kernels for accesing R
+RUN conda install nb_conda_kernels
 
 #install git, nano, less, cleanup
 RUN apt-get update && \
