@@ -13,17 +13,25 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 
 ## Usage
 
-1. Clone Repo to local machine
+1. Clone Repo to local machine from terminal
 `Git clone https://github.com/calamari99/dsci-310-group-12-dreamteam.git`
 
 2. Build docker image and file.
 `docker build -t <group12v3> .`
 
-3. Running jupyter file using docker image from step 2
-`docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>`
-`docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>`
+3. Running jupyter file using docker image from step 2.
+`docker container run -d \
+    -p 8888:8888   \
+    -v /$(pwd):/opt/notebooks/submission.ipynb \
+    -e JUPYTER_TOKEN=enter \
+    -e GRANT_SUDO=yes \
+    --user root \
+    --name test  \
+    eb93706bb5394fb793562bd98ba1822e70c2aa90352746fa2ca1159fb9d6dff2
 
-4. Swap to notebooks folder.
+<!-- `docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>` -->
+
+4. Swap to notebooks folder from root folder
 `cd notebooks`
 
 5. Trust notebook.
@@ -32,6 +40,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 6. Open jupyter lab.
 ` jupyter lab`
 
+7. Open jupyter notebook in notebooks folder.
 
 
 ## License

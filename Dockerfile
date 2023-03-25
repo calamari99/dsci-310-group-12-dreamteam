@@ -1,12 +1,9 @@
 FROM jupyter/datascience-notebook:r-4.0.3
 
-USER root
-
 #install jupyter lab git extension
-RUN conda install jupyterlab-git
-
-#install conda kernels for accesing R
-RUN conda install nb_conda_kernels
+RUN conda install --yes - c conda-forge \
+    jupyterlab-git \
+    nb_conda_kernels 
 
 #install git, nano, less, cleanup
 RUN apt-get update && \
@@ -31,15 +28,9 @@ COPY /notebooks/submission.ipynb /notebooks/submission.ipynb
 #run r packages
 RUN Rscript /scripts/install_packages.R 
 
-# RUN apt-get clean && rm -rf var/lib/apt/lists/*
 #create port
 EXPOSE 8888
 
-# #swap to jupyter user
-# USER $NB_UID
-
-#working directory
-WORKDIR "/notebooks"
 
 
 
