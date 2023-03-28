@@ -20,23 +20,32 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 `docker build -t <group12v4> .`
 
 3. Running jupyter file using docker image from step 2.
-`docker run --rm -t\
+`docker run --rm -it\
     -p 8888:8888   \
     -v ${PWD}:/home/jovyan/work \
-    calamari99/version1:latest `
+    calamari99/group12v5:version3.0`
 
 <!-- `docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>` -->
 
-4. Swap to notebooks folder from root folder
-`cd notebooks`
+<!--  Docker credential issues:
+1. Logout of Docker:
+` docker logout `
 
-5. Trust notebook.
-`jupyter trust submission.ipynb`
+2. Build image with tag using:
+` docker tag <imagename> <userID/imagename:tagname> 
 
-6. Open jupyter lab.
-` jupyter lab`
+3. Login to docker
+` docker login `
 
-7. Open jupyter notebook in notebooks folder.
+4. Push image
+` docker push <userID/imagename:tagname> 
+-->
+
+4. Copy and paste a URL that was populated in step 3 starting with:
+`http://127.0.0.1:8888/lab?token=<token>`
+
+
+5. Open jupyter notebook in notebooks folder and run all.
 
 
 ## License
@@ -44,3 +53,4 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 # References
 Credit to DSCI100 group: Sara Jafroudi, Enoch Cheung, Jason Ngo, Bruno Gagnon
 https://github.com/calamari99/Facebook-Post-Predictor
+
