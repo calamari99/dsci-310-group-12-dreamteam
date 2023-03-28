@@ -48,7 +48,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 `http://127.0.0.1:8888/lab?token=<token>`
 
 
-5. Open jupyter notebook in notebooks folder and run all.
+5. Open jupyter notebook in notebooks folder and run all cells.
 
 
 ## License
