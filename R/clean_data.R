@@ -11,21 +11,21 @@
 
 library(dplyr)
 clean_data <- function(facebook) {
-  facebook_clean <- dplyr::select(facebook, Type, comment,
+  facebook_clean <<- na.omit(dplyr::select(facebook, Type, comment,
                                   like, share, Total_Interactions,
                                   Paid, Lifetime_Post_Total_Impressions,
-                                  Lifetime_Post_Total_Reach) %>%
-    na.omit(df)
+                                  Lifetime_Post_Total_Reach))
+                      
   
-  facebook_clean_unpaid <- facebook_clean %>% filter(Paid == 0)
-  facebook_clean_paid <- facebook_clean %>% filter(Paid == 1)
+  facebook_clean_unpaid <<- facebook_clean %>% filter(Paid == 0)
+  facebook_clean_paid <<- facebook_clean %>% filter(Paid == 1)
   
   # Summary of unpaid posts by type
-  unpaid_summary <- facebook_clean_unpaid %>% group_by(Type) %>% 
+  unpaid_summary <<- facebook_clean_unpaid %>% group_by(Type) %>% 
     summarise(unpaid = n()) 
   
   # Summary of paid posts by type
-  paid_summary <- facebook_clean_paid %>% group_by(Type) %>% 
+  paid_summary <<- facebook_clean_paid %>% group_by(Type) %>% 
     summarise(paid = n())
   
   print("Table 1. Facebook data summary")
