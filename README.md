@@ -55,6 +55,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 
 
 ## License
+MIT license for project analysis
 
 # References
 Credit to DSCI100 group: Sara Jafroudi, Enoch Cheung, Jason Ngo, Bruno Gagnon
