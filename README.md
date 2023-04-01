@@ -12,6 +12,9 @@ The data is collected from: https://archive.ics.uci.edu/ml/datasets/Facebook+met
 The analysis report is attached [here](https://github.com/calamari99/Facebook-Post-Predictor/blob/main/submission.ipynb).
 
 ## Usage
+0. Environment setup
+- Install Docker in your computer.
+- Log into Docker account.
 
 1. Clone Repo to local machine from terminal
 `Git clone https://github.com/calamari99/dsci-310-group-12-dreamteam.git`
