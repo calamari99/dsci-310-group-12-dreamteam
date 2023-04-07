@@ -26,7 +26,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 - `docker pull calamari99/group12v5:version3.0`
 
 3a. Running jupyter file using docker image from step 2.
-- `docker run --rm -it -p 8888:8888 -v ${PWD}:/home/jovyan/work calamari99/group12v5:version3.0`
+- `docker run --rm -it -p 8888:8888 -v /$(pwd):/home/jovyan/work calamari99/group12v5:version3.0`
 
 <!-- `docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>` -->
 
