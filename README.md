@@ -12,12 +12,12 @@ The data is collected from: https://archive.ics.uci.edu/ml/datasets/Facebook+met
 The analysis report is attached [here](https://github.com/calamari99/Facebook-Post-Predictor/blob/main/submission.ipynb).
 
 ## Usage
-0. Environment setup
+0a. Environment setup
 - Install Docker in your computer.
 - Log into Docker account.
 
-1. Clone Repo to local machine from terminal
-`Git clone https://github.com/calamari99/dsci-310-group-12-dreamteam.git`
+1a. Clone Repo to local machine from terminal
+- `Git clone https://github.com/calamari99/dsci-310-group-12-dreamteam.git`
 
 2a. Build docker image and file OR pull from hub in 2b
 `docker build -t <group12v5> .`
@@ -25,7 +25,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 2b. Pull from docker hub with version needed for grading (version3.0 for milestone 2)
 `docker pull calamari99/group12v5:version3.0`
 
-3. Running jupyter file using docker image from step 2.
+3a. Running jupyter file using docker image from step 2.
 `docker run --rm -it\
     -p 8888:8888   \
     -v ${PWD}:/home/jovyan/work \
@@ -47,11 +47,11 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 ` docker push <userID/imagename:tagname> 
 -->
 
-4. Copy and paste a URL that was populated in step 3 starting with:
+4a. Copy and paste a URL that was populated in step 3 starting with:
 `http://127.0.0.1:8888/lab?token=<token>`
 
 
-5. Open jupyter notebook in notebooks folder and run all cells.
+5a. Open jupyter notebook in notebooks folder and run all cells.
 
 
 ## License
