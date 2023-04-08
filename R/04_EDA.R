@@ -2,7 +2,7 @@
 # date: 2023-04-07
 # Figure 1: Mean number of likes requires train_set_unpaid
 # Figure 2: Mean interactions per post requires train_set_unpaid
-# Figure 3:Total Reach vs Total Interactions requires train_set_unpaid
+
 
 
 doc <- "
@@ -91,11 +91,30 @@ main <- function(input_dir,out_dir) {
         theme(text = element_text(size = 20)) 
     
 
-    #  Save file name and location
+    #  Save file 1 name and location
     file_name = "01_meanLikesByPostType.png"
     ggsave(filename = file_name, plot = mean_likes_bar, path = file.path(out_dir), device="png")
 
-    print("image generated")
+    print("image 1 generated")
+
+    ##set options
+    options(repr.plot.width=10, repr.plot.height=10)
+
+
+    ## -- build figure 2--
+    mean_fb <- ggplot(fb_long, aes(x = type, y = Value, fill = Stat)) +
+        geom_col(position = "dodge") +
+        labs(x = "Type of Post", y = "Count", title="Figure 2. Mean interactions per post type") +
+        scale_fill_discrete(name = "Stats",
+                            labels = c("Mean Comment",
+                                    "Mean Like",
+                                    "Mean Share",
+                                    "Mean Total Interactions"))+
+        theme(text = element_text(size = 20))
+    #  Save file 2 name and location
+    file_name = "02_meanInteractionsPostType.png"
+    ggsave(filename = file_name, plot = mean_fb, path = file.path(out_dir), device="png")
+
 }
 
 # call main

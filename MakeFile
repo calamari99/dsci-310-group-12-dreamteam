@@ -20,6 +20,6 @@ data/train_set.csv data/test_set.csv: data/facebook_clean.csv R/03_split_unpaid_
 	Rscript R/03_split_unpaid_data.R --input_dir="data/facebook_clean.csv" --out_dir="data"
 
 #04: Produce Preprocessing EDA figures
-results/01_meanLikesByPostType.png: data/train_set.csv R/04_EDA.R 
+results/01_meanLikesByPostType.png results/02_meanInteractionsPostType: data/train_set.csv R/04_EDA.R 
 	Rscript R/04_EDA.R  --input_dir="data/train_set.csv" --out_dir="results"
 
