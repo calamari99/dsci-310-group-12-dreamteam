@@ -11,7 +11,7 @@ Options:
 --out_dir=<out_dir>         data dir
 " 
 
-# set cran mirrpr
+# set cran mirror
 r = getOption("repos")
 r["CRAN"] = "http://cran.us.r-project.org"
 options(repos = r)
@@ -29,7 +29,6 @@ library(repr)
 library(cowplot)
 library(tidyverse)
 library(tidymodels)
-install.packages('caTools')
 library(caTools)
 
 print("libraries read")
@@ -63,6 +62,8 @@ main <- function(input_dir, out_dir) {
     write_csv(train_set_unpaid, file.path(out_dir, file_name_test))
     print("Training Data Saved in data folder")
 }
+
+print("image generated")
 
 # call main
 main(opt[["--input_dir"]], opt[["--out_dir"]])
