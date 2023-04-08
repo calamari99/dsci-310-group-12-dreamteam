@@ -61,6 +61,11 @@ main <- function(input_dir, out_dir) {
     write_csv(test_set_unpaid, file.path(out_dir, file_name_train))
     write_csv(train_set_unpaid, file.path(out_dir, file_name_test))
     print("Training Data Saved in data folder")
+
+    saveRDS(train_set_unpaid,  file = paste0(out_dir,"/train_set_unpaid.rds"))
+    saveRDS(val_set_unpaid,  file = paste0(out_dir,"val_set_unpaid.rds"))
+
+
 }
 
 # call main
