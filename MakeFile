@@ -2,15 +2,20 @@
 # Author: Enoch Cheung 
 # date: 2023-04-23
 
+
+# 0: Run all
+all: data/facebook.csv data/facebook.csv data/train_set.csv data/test_set.csv
+
+
 # 01: Load data
-data/facebook_data.csv:	R/01_read_data_from_URL.R
+data/facebook.csv:	R/01_read_data_from_URL.R
 	Rscript R/01_read_data_from_URL.R --url="https://raw.githubusercontent.com/calamari99/dsci-310-group-12-dreamteam/main/data/dataset_Facebook.csv" --out_dir="data"
 
-#02: Clean data
-data/facebook_clean.csv: R/02_clean_data.R data/facebook.csv
+#02: Read csv facebook_data and Clean data using R script
+data/facebook_clean.csv: data/facebook.csv R/02_clean_data.R 
 	Rscript R/02_clean_data.R --input_dir="data/facebook.csv" --out_dir="data"
 
-	
-#03: split unpaid data
-data/train_set.csv data/test_set.csv: R/03_train_set.R data/facebook_clean.csv
+#03: Read csv facebook_clean and split unpaid data using R script
+data/train_set.csv data/test_set.csv: data/facebook_clean.csv R/03_split_unpaid_data.R 
 	Rscript R/03_split_unpaid_data.R --input_dir="data/facebook_clean.csv" --out_dir="data"
+

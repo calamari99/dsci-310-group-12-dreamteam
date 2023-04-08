@@ -5,36 +5,57 @@ doc <- "
 Split data to training/testing/validation sets for unpaid dataset 
 
 Usage: 
-  data/facebook.csv --input_dir=<input_dir> --out_dir=<out_dir>
+  R/03_split_unpaid_data.R --input_dir=<input_dir> --out_dir=<out_dir>
 Options:
---input_dir=<input_dir>     raw data file
---out_dir=<out_dir>   clean data dir
+--input_dir=<input_dir>     clean data file
+--out_dir=<out_dir>         data dir
 " 
+
+# set cran mirrpr
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+
 #libraries
-library(dplyr)
-library(docopt)
 library(readr)
+library(docopt)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(grid)
+library(gridExtra)
+library(kknn)
+library(repr)
+library(cowplot)
+library(tidyverse)
+library(tidymodels)
+install.packages('caTools')
 library(caTools)
 
-#split constants
-set.seed(99)
-partitionTrain = 0.8
-ratioTrainValidation = 7/8
+print("libraries read")
 
 opt <- docopt(doc)
 
 main <- function(input_dir, out_dir) {
+    #split constants
+    set.seed(99)
+    partitionTrain = 0.8
+    ratioTrainValidation = 7/8
+
+    #Read
     facebook_clean_unpaid <<- read_delim(input_dir) 
+
+    #split test
     split <- sample.split(facebook_clean_unpaid$like, SplitRatio = partitionTrain)
     train_val_data_unpaid <- subset(facebook_clean_unpaid, split == TRUE)
     test_set_unpaid <- subset(facebook_clean_unpaid, split == FALSE)
 
+    #split train
     split <- sample.split(train_val_data_unpaid$like, SplitRatio = ratioTrainValidation)
     train_set_unpaid <- subset(train_val_data_unpaid, split == TRUE)
     val_set_unpaid <- subset(train_val_data_unpaid, split == FALSE)
 
-
-    # ouput
+    # output
     file_name_train = "train_set.csv"
     file_name_test = "test_set.csv"
 
