@@ -63,7 +63,7 @@ main <- function(input_dir, out_dir) {
     print("Training Data Saved in data folder")
 
     saveRDS(train_set_unpaid,  file = paste0(out_dir,"/train_set_unpaid.rds"))
-    saveRDS(val_set_unpaid,  file = paste0(out_dir,"val_set_unpaid.rds"))
+    saveRDS(val_set_unpaid,  file = paste0(out_dir,"/val_set_unpaid.rds"))
 
 
 }
