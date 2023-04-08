@@ -6,6 +6,11 @@
 data/facebook_data.csv:	R/01_read_data_from_URL.R
 	Rscript R/01_read_data_from_URL.R --url="https://raw.githubusercontent.com/calamari99/dsci-310-group-12-dreamteam/main/data/dataset_Facebook.csv" --out_dir="data"
 
-02: Clean data
-data/facebook_data.csv:	R/02_clean_data.R data/facebook.csv
+#02: Clean data
+data/facebook_clean.csv: R/02_clean_data.R data/facebook.csv
 	Rscript R/02_clean_data.R --input_dir="data/facebook.csv" --out_dir="data"
+
+	
+#03: split unpaid data
+data/train_set.csv data/test_set.csv: R/03_train_set.R data/facebook_clean.csv
+	Rscript R/03_split_unpaid_data.R --input_dir="data/facebook_clean.csv" --out_dir="data"
