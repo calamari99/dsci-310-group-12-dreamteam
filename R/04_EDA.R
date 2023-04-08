@@ -6,7 +6,7 @@
 
 
 doc <- "
-Produce figure 1,2,3
+Produce figure 1,2
 
 Usage: 
   R/04_EDA.R --input_dir=<input_dir> --out_dir=<out_dir>
@@ -114,6 +114,8 @@ main <- function(input_dir,out_dir) {
     #  Save file 2 name and location
     file_name = "02_meanInteractionsPostType.png"
     ggsave(filename = file_name, plot = mean_fb, path = file.path(out_dir), device="png")
+
+    print("image 2 generated")
 
 }
 

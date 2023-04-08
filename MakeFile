@@ -4,7 +4,7 @@
 
 
 # 0: Run all
-all: data/facebook.csv data/facebook.csv data/train_set.csv data/test_set.csv results/01_meanLikesByPostType.png
+all: data/facebook.csv data/facebook.csv data/train_set.csv data/test_set.csv results/01_meanLikesByPostType.png results/02_meanInteractionsPostType results/03_reachVsInteractions.png
 
 
 # 01: Load data

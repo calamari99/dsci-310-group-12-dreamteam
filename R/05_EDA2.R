@@ -65,6 +65,7 @@ main <- function(input_dir, out_dir) {
     file_name = "03_reachVsInteractions.png"
     ggsave(filename = file_name, plot = unpaid_plot, path = file.path(out_dir), device="png")
 
+  print("image 3 generated")
 }
 
 # call main
