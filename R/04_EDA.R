@@ -92,8 +92,10 @@ main <- function(input_dir,out_dir) {
     
 
     #  Save file name and location
-    file_name <- "01_meanLikesByPostType"
-    ggsave(file.path(out_dir, file_name), plot=mean_likes_bar)
+    file_name = "01_meanLikesByPostType.png"
+    ggsave(filename = file_name, plot = mean_likes_bar, path = file.path(out_dir), device="png")
+
+    print("image generated")
 }
 
 # call main
