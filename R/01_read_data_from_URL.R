@@ -1,23 +1,22 @@
 # author: Enoch Cheung
 # date: 2023-04-07
 
-"
+doc <- "
 Download data from the web into csv file and load libaries.
-Usage: R/read_data_from_URL.R --url=<url> --out_dir=<out_dir>
+Usage: 
+  R/01_read_data_from_URL.R --url=<url> --out_dir=<out_dir>
 Options:
---url=<url>           URL path of data 
+--input_dir=<url>     URL path of data 
 --out_dir=<out_dir>   Path to write file on local machine
-" -> doc
-
-# "../data/facebook_data.csv" - output
+" 
+# set cran mirrpr
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
 
 library(readr)
 library(docopt)
-options(repr.matrix.max.rows = 8)
-library(docopt)
-library(caTools)
 library(dplyr)
-library(readr)
 library(ggplot2)
 library(tidyr)
 library(grid)
@@ -27,6 +26,8 @@ library(repr)
 library(cowplot)
 library(tidyverse)
 library(tidymodels)
+install.packages('caTools')
+library(caTools)
 
 opt <- docopt(doc)
 
@@ -37,13 +38,12 @@ main <- function(url,out_dir) {
   name_temp <<- facebook
   name_temp_vec <<- gsub(" ", "_", colnames(facebook))
   colnames(facebook) <<- name_temp_vec
-  write_csv(facebook, out_dir)
 
-#  Save file location
-
-#
-  main(opt[["--url"]], opt[["--out_dir"]])
-
+  #  Save file name and location
+  file_name <- "facebook.csv"
+  write_csv(facebook, file.path(out_dir, file_name))
 }
 
+# call main
+main(opt[["--url"]], opt[["--out_dir"]])
 
