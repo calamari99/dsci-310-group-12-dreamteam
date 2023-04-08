@@ -19,6 +19,7 @@ RUN Rscript -e "require(devtools); install_version('MASS', version='7.3-58.3', r
 RUN Rscript -e "require(devtools); install_version('cowplot', version='1.1.1', repos='http://cran.us.r-project.org')"
 RUN Rscript -e "require(devtools); install_version('ggplot2', version='3.4.1', repos='http://cran.us.r-project.org')"
 RUN Rscript -e "require(devtools); install_version('gridExtra', version='2.3', repos='http://cran.us.r-project.org')"
+RUN Rscript -e "require(devtools); install_version('docopt', version='0.7.1', repos='http://cran.us.r-project.org')"
 
 # a install --yes -c conda-forge \
 #     r-caTools=1.18.2 \

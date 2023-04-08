@@ -1,0 +1,7 @@
+# Title: Facebook Post Success Predictor
+# Author: Enoch Cheung 
+# date: 2023-04-23
+
+# Load data
+data/facebook_data.csv:	R/01_read_data_from_URL.R
+	Rscript R/01_read_data_from_URL.R --url="https://raw.githubusercontent.com/calamari99/Facebook-Post-Predictor/main/data/dataset_Facebook.csv" --out_dir"=data"
