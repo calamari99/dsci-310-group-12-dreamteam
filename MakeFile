@@ -19,7 +19,11 @@ data/facebook_clean.csv: data/facebook.csv R/02_clean_data.R
 data/train_set.csv data/test_set.csv: data/facebook_clean.csv R/03_split_unpaid_data.R 
 	Rscript R/03_split_unpaid_data.R --input_dir="data/facebook_clean.csv" --out_dir="data"
 
-#04: Produce Preprocessing EDA figures
+#04: Produce Preprocessing EDA figures 1 and 2
 results/01_meanLikesByPostType.png results/02_meanInteractionsPostType: data/train_set.csv R/04_EDA.R 
 	Rscript R/04_EDA.R  --input_dir="data/train_set.csv" --out_dir="results"
+
+#05: Read csv facebook_clean and produce figure 3
+results/03_reachVsInteractions.png: data/facebook_clean.csv R/05_EDA2.R
+	Rscript R/05_EDA2.R --input_dir="data/facebook_clean.csv" --out_dir="results"
 

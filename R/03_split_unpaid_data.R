@@ -63,7 +63,5 @@ main <- function(input_dir, out_dir) {
     print("Training Data Saved in data folder")
 }
 
-print("image generated")
-
 # call main
 main(opt[["--input_dir"]], opt[["--out_dir"]])
