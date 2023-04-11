@@ -41,6 +41,19 @@ main <- function(
         conf_mat(truth = Type, estimate = .pred_class)
     
     print("06_run")
+        # #Save table with prediction accuracy
+    # png(
+    #     file="/results/04_unpaid_prediction_accuracy.png",
+    #     width=8
+    #     height=4
+    # )
+
+    # print("saved knn table accuracy")
+
+    #save variable
+    saveRDS(unpaid_prediction_accuracy,  file = paste0(out_dir,"/unpaid_prediction_accuracy.rds"))
+    print("saved accuracy as variable")
+    
 )
 
 

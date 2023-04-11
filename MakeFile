@@ -27,3 +27,8 @@ results/01_meanLikesByPostType.png results/02_meanInteractionsPostType: data/tra
 results/03_reachVsInteractions.png: data/facebook_clean.csv R/05_EDA2.R
 	Rscript R/05_EDA2.R --input_dir="data/facebook_clean.csv" --out_dir="results"
 
+#06: Read csv facebook_clean.cv, run tran_set.rds, run test_set.rds, and produce figure 4 table as png
+results/03_reachVsInteractions.png: data/facebook_clean.csv R/06_knn.R
+	Rscript R/06_knn.R --input_dir="data/facebook_clean.csv" --out_dir="results"
+
+
