@@ -68,6 +68,53 @@ main <- function() {
     #save variable
     saveRDS(unpaid_prediction_accuracy,  file = paste0("data/unpaid_prediction_accuracy.rds"))
     print("saved accuracy as variable")
+
+
+    ## TUNING ######################################################
+    unpaid_vfold <- vfold_cv(train_set_unpaid, v = 10, strata = Type)
+
+    unpaid_fit_v2 <- workflow() %>%
+        add_recipe(unpaid_recipe) %>%
+        add_model(knn_spec) %>%
+        fit_resamples(resamples = unpaid_vfold) %>% collect_metrics() %>%
+        suppressMessages()
+
+    #save variable
+    # saveRDS(unpaid_prediction_accuracy,  file = paste0("data/unpaid_prediction_accuracy.rds"))
+    # print("saved accuracy as variable")
+
+
+    knn_tune <- nearest_neighbor(weight_func = "rectangular", neighbors = tune()) %>%
+    set_engine("kknn") %>%
+    set_mode("classification") 
+
+    knn_results <- workflow() %>%
+        add_recipe(unpaid_recipe) %>%
+        add_model(knn_tune) %>%
+        tune_grid(resamples = unpaid_vfold, grid = 10) %>% 
+        collect_metrics() %>%
+        suppressMessages()
+
+    accuracies <- knn_results %>% 
+        filter(.metric == "accuracy")
+
+    accuracy_versus_k <- ggplot(accuracies, aes(x = neighbors, y = mean))+
+        geom_point() +
+        geom_line() +
+        labs(x = "Neighbors", y = "Accuracy Estimate",
+            title = "Figure 8. K-NN Classification Accuracy by Neighbors") +
+        scale_x_continuous(breaks = seq(0, 16, by = 2)) +  # adjusting the x-axis
+        scale_y_continuous(limits = c(0.8, 1.0)) + # adjusting the y-axis
+        theme(text = element_text(size = 20))
+
+    
+    #  Save file 4 name and location
+    ggsave(filename = "04_KNN_ACCURACY", 
+     plot = accuracy_versus_k,
+     path = "/results", 
+     device="png")
+
+    print("figure 04_KNN_ACCURACY saved")
     
 }
 
