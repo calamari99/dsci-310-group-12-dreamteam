@@ -109,9 +109,9 @@ main <- function() {
 
     
     #  Save file 4 name and location
-    ggsave(filename = "04_KNN_ACCURACY", 
+    ggsave(filename = "04_KNN_ACCURACY.png", 
      plot = accuracy_versus_k,
-     path = "/results", 
+     path = "results", 
      device="png")
 
     print("figure 04_KNN_ACCURACY saved")
