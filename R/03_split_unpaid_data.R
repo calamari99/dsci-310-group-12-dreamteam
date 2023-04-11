@@ -42,7 +42,14 @@ main <- function(input_dir, out_dir) {
     ratioTrainValidation = 7/8
 
     #Read
-    facebook_clean_unpaid <<- read_delim(input_dir) 
+    facebook_clean_unpaid <<- read_delim(input_dir)
+    cols <- c("Type","Paid")
+
+    #change data types
+    facebook_clean_unpaid[cols] <- lapply(facebook_clean_unpaid[cols], as.factor)
+    name_temp <- facebook_clean_unpaid
+    name_temp_vec <- gsub(" ", "_", colnames(facebook_clean_unpaid))
+    colnames(facebook_clean_unpaid) <- name_temp_vec
 
     #split test
     split <- sample.split(facebook_clean_unpaid$like, SplitRatio = partitionTrain)

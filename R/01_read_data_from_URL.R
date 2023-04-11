@@ -32,12 +32,14 @@ library(caTools)
 opt <- docopt(doc)
 
 main <- function(url,out_dir) {
-  facebook <<- read_csv2(url) 
-  cols <- c("Type", "Category", "Post Month", "Paid", "Post Weekday", "Post Hour")  #set cols to change to categorical %>%
-  facebook[cols] <<- lapply(facebook[cols], as.factor)
-  name_temp <<- facebook
-  name_temp_vec <<- gsub(" ", "_", colnames(facebook))
-  colnames(facebook) <<- name_temp_vec
+
+  cols <- c("Type", "Category", "Post Month", "Paid", "Post Weekday", "Post Hour")
+  facebook <- read_csv2(url) 
+
+  facebook[cols] <- lapply(facebook[cols], as.factor)
+  name_temp <- facebook
+  name_temp_vec <- gsub(" ", "_", colnames(facebook))
+  colnames(facebook) <- name_temp_vec
 
   #  Save file name and location
   file_name <- "facebook.csv"

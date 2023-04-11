@@ -1,20 +1,35 @@
 # author: Enoch Cheung
 # date: 2023-04-08
 
-doc <- "
-Take valset and trainset variables and start building model. (i) Pre-tuned (ii) 
+# doc <- "
+# Take valset and trainset variables and start building model. (i) Pre-tuned (ii) 
 
-Usage: 
-  R/06_knn--input_dir=<input_dir> --out_dir=<out_dir>
-Options:
---input_dir=<input_dir>     train/val data
---out_dir=<out_dir>         data dir
-" 
+# Usage: 
+#   R/06_knn--input_dir=<input_dir> --out_dir=<out_dir>
+# Options:
+# --input_dir=<input_dir>     train/val data
+# --out_dir=<out_dir>         data dir
+# " 
 
-main <- function( 
+#libraries
+library(readr)
+library(docopt)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(grid)
+library(gridExtra)
+library(kknn)
+library(repr)
+library(cowplot)
+library(tidyverse)
+library(tidymodels)
+library(caTools)
 
-    train_set_unpaid <- readRDS(data/train_set_unpaid.rds)
-    val_set_unpaid <- readRDS(data/val_set_unpaid.rds)
+main <- function() {
+
+    train_set_unpaid <- readRDS("data/train_set_unpaid.rds")
+    val_set_unpaid <- readRDS("data/val_set_unpaid.rds")
 
     knn_spec <- nearest_neighbor(weight_func = "rectangular", neighbors = 3) %>%
       set_engine("kknn") %>%
@@ -51,11 +66,11 @@ main <- function(
     # print("saved knn table accuracy")
 
     #save variable
-    saveRDS(unpaid_prediction_accuracy,  file = paste0(out_dir,"/unpaid_prediction_accuracy.rds"))
+    saveRDS(unpaid_prediction_accuracy,  file = paste0("data/unpaid_prediction_accuracy.rds"))
     print("saved accuracy as variable")
     
-)
+}
 
-
-# call main
-main(opt[["--input_dir"]], opt[["--out_dir"]])
+main()
+# # call main
+# main(opt[["--input_dir"]], opt[["--out_dir"]])

@@ -37,7 +37,15 @@ opt <- docopt(doc)
 
 main <- function(input_dir,out_dir) {
     #read in data
-    train_set_unpaid <<- read_delim(input_dir) 
+    train_set_unpaid <- read_delim(input_dir) 
+
+    #function change datatypes
+    cols <- c("Type","Paid")
+    #change data types
+    train_set_unpaid[cols] <- lapply(train_set_unpaid[cols], as.factor)
+    name_temp <- train_set_unpaid 
+    name_temp_vec <- gsub(" ", "_", colnames(train_set_unpaid))
+    colnames(train_set_unpaid) <- name_temp_vec
 
     #summary of unpaid posts
     summ_train_unpaid <- train_set_unpaid %>%
