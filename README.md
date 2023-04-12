@@ -19,13 +19,13 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 1a. Clone Repo to local machine from terminal
 - `Git clone https://github.com/calamari99/dsci-310-group-12-dreamteam.git`
 
-2a. Build docker image and file OR pull from hub in 2b
+2a. Move to repo folder and build docker image and file OR pull from hub in 2b
 - `docker build -t <group12v5> .`
 
-2b. Pull from docker hub with version needed for grading (version3.0 for milestone 2)
+2b. Make sure Docker application is open and pull from docker with version needed for grading (version3.0 for milestone 2)
 - `docker pull calamari99/group12v5:version3.0`
 
-3a. Running jupyter file using docker image from step 2.
+3a. Move to repo folder and initialize jupyter notebook using docker image from step 2. (Change version based on grading needs)
 - `docker run --rm -it -p 8888:8888 -v /$(pwd):/home/jovyan/work calamari99/group12v5:version3.0`
 
 <!-- `docker container run -d -p 8888:8888 -e JUPYTER_TOKEN=enter -e GRANT_SUDO=yes --user root --name test  –<dockerimage>` -->
