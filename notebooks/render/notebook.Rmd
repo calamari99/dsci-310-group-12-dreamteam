@@ -88,7 +88,13 @@ Therefore, these findings may be used to choose what type of posts are prioritiz
 These findings may lead to further exploration of how the contents of these posts impact user engagement.
 This may include the duration of a video, content of an image, length of a status, or details about the contents of a link. 
 
-```{r}
+```{r message = FALSE, warning = FALSE, echo = FALSE}
+
+# set cran mirror
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+
 #libraries
 
 #package to install in docker: 
@@ -96,6 +102,12 @@ This may include the duration of a video, content of an image, length of a statu
 # 
 
 install.packages("docopt")
+install.packages("bookdown")
+install.packages("knitr")
+install.packages("rmarkdown")
+install.packages("tinytex")
+
+
 library(readr)
 library(docopt)
 library(dplyr)
@@ -109,6 +121,12 @@ library(cowplot)
 library(tidyverse)
 library(tidymodels)
 library(caTools)
+
+library(knitr)
+library(bookdown)
+
+knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
 ---
