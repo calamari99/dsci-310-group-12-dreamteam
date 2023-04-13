@@ -47,14 +47,17 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 4a. Copy and paste a URL that was populated in step 3 starting with:
 - `http://127.0.0.1:8888/lab?token=<token>`
 
-
 5. Open jupyter notebook in notebooks folder and run all cells.
 
-6. To generate report in html file move to home repository folder and run:
+---
+
+Generate Report
+
+1. To generate report in html file move to home repository folder and run:
 - `make`
 - Note: the generated html file `notebook.html` will be populated in the notebooks/render folder
 
-7. To remove all outputs (vars/data/results) move to home repository folder and run:
+2. To remove all outputs (vars/data/results) move to home repository folder and run:
 - `make clean`
 
 
