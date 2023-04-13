@@ -114,7 +114,7 @@ main <- function() {
      path = "results", 
      device="png")
 
-    print("figure 04_KNN_ACCURACY saved")
+    print("04_KNN_ACCURACY saved")
     
 }
 
