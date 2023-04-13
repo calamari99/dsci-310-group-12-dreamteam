@@ -55,7 +55,7 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 - Note: the generated html file `notebook.html` is located in notebooks/render folder
 
 7. To remove all outputs (vars/data/results) move to home repository folder and run:
-`make clean`
+- `make clean`
 
 
 
