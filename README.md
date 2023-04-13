@@ -57,6 +57,7 @@ Generate Report
 1. To generate report as a html outout, move to home repository folder in a new terminal and run:
 - `make`
 - Note: the generated html file `notebook.html` will be populated in the notebooks/render folder
+- Try using a gitbash terminal if make does not run in powershell/pc terminal.
 
 2. To remove all outputs (vars/data/results) move to home repository folder and run:
 - `make clean`
