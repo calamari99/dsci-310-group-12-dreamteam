@@ -1,78 +1,31 @@
 ---
-title: An R Markdown document converted from "submission.ipynb"
-output: html_document
+title: "Facebook Post Prediction"
+output: 
+  bookdown::html_document2:
+    default
+bibliography: references.bib
+
 ---
 
-# Facebook Post Prediction
-
-By: Sara Jafroudi, Enoch Cheung, Jason Ngo, Bruno Gagnon
+Original Analysis By: Sara Jafroudi, Enoch Cheung, Jason Ngo, Bruno Gagnon
+Reproduced by Group 12: Enoch Cheung
 
 https://github.com/calamari99/Facebook-Post-Predictor.git
 
----------------------------------------------------------------------------------------------------------
+# Introduction
 
-## Table of Contents:
-
-1. Introduction
-    
-    a) Research Question
-    
-    b) Overview
-    
-2. Methods & Results
-    
-    a) Selection of Data
-    
-             i) Tidying Data
-
-
-    b) Training, Validation, and Testing Sets
-    
-          i) Compartmentalization
-         ii) Training Data Summaries
-
-
-    c) Preprocessing
-    
-          i) Preliminary Data Analysis
-         ii) Identification of Class Imbalances
-        iii) Balancing Decision
-
-
-    d) Building our Model
-    
-          i) Overview
-         ii) Tuning
-        iii) Accuracy Comparison
-
-
-    e) Analysis
-    
-          i) Classifying a New Observation
-
-
-    f) Results
-    
-3. Discussion
-    
-4. References
-
----
-
-## 1. Introduction
-
-### a) Research Question:
+## Research Question:
 How can an author increase engagement from users on Facebook and can we predict the success of a post using insights from an author's page?
 
-### b) Overview:
-The market utility of social media platforms such as Facebook, which are able to generate mass revenues for cosmetic brands, has been an established and exploited advertising strategy in the digital age (Moro et. al, 2016).
+## Overview:
+The market utility of social media platforms such as Facebook, which are able to generate mass revenues for cosmetic brands, has been an established and exploited advertising strategy in the digital age [@moro].
 The goal of this project is to take a predictive analytical approach to determine which type of Facebook post (i.e., photo, video, status, or link) will engage the most internet-user engagement, determined through variables such as likes, post consumptions, and post total reach.
-The dataset which will be used for this analysis was acquired through an experimental data mining technique which included scraping data from the Facebook page of an internationally renowned cosmetics company on posts made between January 1st and December 31st (Moro et. al., 2016).
+The dataset which will be used for this analysis was acquired through an experimental data mining technique which included scraping data from the Facebook page of an internationally renowned cosmetics company on posts made between January 1st and December 31st [@moro].
 
 We will use the variables of the continuous numerical variables of total reaches (Lifetime_Post_Total_Reach) and the number of total interactions (Total_Interactions), and the categorical variable of Facebook post (Type).
 We chose the two continuous numerical variables of total reach and total interactions as predictors because they are key indicators of success that are interrelated.
 Although we do not consider factors such as the type of users (influencers, company profiles, regular users, etc.), the variable of total reach must be put in relations with total interactions to offer a valuable insight.
-That is because total interactions influence Facebook's algorithm that may result in a viral post and thus increase the total reach regardless of the extent of the user's total network (e.g. number of friends and affiliated groups) (Quesenberry & Coolsen, 2019).
+That is because total interactions influence Facebook's algorithm that may result in a viral post and thus increase the total reach regardless of the extent of the user's total network (e.g. number of friends and affiliated groups) [@Quesen].
 Therefore, the variables of total reach and total interactions must be paired to fully grasp the success of a post as both can create a positive feedback loop. 
 
 For the methodology, we will look at the relationship between these variables in a scatter plot graph that will help us to formulate our hypothesis.
@@ -88,7 +41,7 @@ Therefore, these findings may be used to choose what type of posts are prioritiz
 These findings may lead to further exploration of how the contents of these posts impact user engagement.
 This may include the duration of a video, content of an image, length of a status, or details about the contents of a link. 
 
-```{r message = FALSE, warning = FALSE, echo = FALSE}
+```{r setup, include=FALSE}
 
 # set cran mirror
 r = getOption("repos")
@@ -97,16 +50,11 @@ options(repos = r)
 
 #libraries
 
-#package to install in docker: 
-# docopt
-# 
-
 install.packages("docopt")
 install.packages("bookdown")
 install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("tinytex")
-
 
 library(readr)
 library(docopt)
@@ -121,45 +69,23 @@ library(cowplot)
 library(tidyverse)
 library(tidymodels)
 library(caTools)
-
-library(knitr)
 library(bookdown)
+library(knitr)
 
-knitr::opts_chunk$set(echo = FALSE)
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 ```
 
----
 
-## 2. Methods & Results
+# Methods & Results
 
-```{r}
+```{r options, include=FALSE}
 options(repr.matrix.max.rows = 8)
 options(warn = -1)
 ```
 
-```{r}
-library("caTools")
-```
-
-```{r}
-facebook_url <-
-    "https://raw.githubusercontent.com/calamari99/Facebook-Post-Predictor/main/data/dataset_Facebook.csv"
-
-facebook <- read_csv2(facebook_url) %>%
-    suppressMessages()
-
-# Replacing specified columns to categorical factors
-cols <- c("Type", "Category", "Post Month", "Paid", "Post Weekday", "Post Hour")
-facebook[cols] <- lapply(facebook[cols], as.factor)
-
-# # Renaming column headers in order to remove spaces
-facebook_colname_fix <- facebook
-facebook_col_name_vec <- gsub(" ", "_", colnames(facebook))
-colnames(facebook) <- facebook_col_name_vec
-```
-
-#### i) Tidying Data
+## Tidying Data
 
 Let us select only the variables relevant to our analysis.
 
@@ -170,37 +96,6 @@ We determined that the following key performance indicators best describe a post
 - shares
 - total interactions (summation of the 3 observations above) 
 
-```{r}
-# #call function from R script
-# source("../R/clean_data.R")
-# clean_data(facebook)
-```
-
-```{r}
-# Select variables relevant to our analysis
-
-facebook_clean <- dplyr::select(facebook, Type, comment,
-                                like, share, Total_Interactions,
-                                Paid, Lifetime_Post_Total_Impressions,
-                                Lifetime_Post_Total_Reach) %>%
-                                na.omit()
-                                
-# Separate paid and unpaid posts
-facebook_clean_unpaid <- facebook_clean %>% filter(Paid == 0)
-facebook_clean_paid <- facebook_clean %>% filter(Paid == 1)
-
-# Summary of unpaid posts by type
-unpaid_summary <- facebook_clean_unpaid %>% group_by(Type) %>% 
-    summarise(unpaid = n()) 
-
-# Summary of paid posts by type
-paid_summary <- facebook_clean_paid %>% group_by(Type) %>% 
-    summarise(paid = n())
-
-print("Table 1. Facebook data summary")
-Reduce(dplyr::full_join, list(unpaid_summary, paid_summary)) %>%
-    suppressMessages()
-```
 
 Within our 500 data points collected, we have filtered out all observations with NA values and separated our data into paid and unpaid categories due to additive relationships.
 This allows us to explore the relationship between post type and our defined success metric.
@@ -210,12 +105,9 @@ Moving forward, this study will only evaluate on media postings without paid adv
 Social media algorithms that adjust prioritizations between paid and non-paid posts can heavily factor into our metrics received and should be considered in this analysis.
 To control for this potential source of uncertainty, we have isolated our data into paid and unpaid categories. 
 
----
+## Training, Validation, and Testing Sets 
 
-### b) Training, Validation, and Testing Sets 
-
-
-#### i) Compartmentalization
+### Compartmentalization
 We have split our data into training and testing sets in order to reduce bias within our model data and testing data. 
 
 *Distribution of Training and Testing set*
@@ -235,504 +127,65 @@ let us split our data into 10 total groups.
 We chose to approach our training data by creating a 80:20 ratio between testing and training data where the  training set is composed of both the “validation” and “training” set.
 We have also chosen a 10-fold cross-validation procedure to establish unbiased estimators.
 
-#### Defining variables:
+## Preprocessing 
 
-```{r}
-set.seed(99)
-partitionTrain = 0.8
-ratioTrainValidation = 7/8
-```
-
-#### Total Posts:
-
-```{r}
-# 80/20 ratio TrainingSet:TestingSet
-split <- sample.split(facebook_clean$like, SplitRatio = partitionTrain)
-train_val_data <- subset(facebook_clean, split == TRUE)
-test_set <- subset(facebook_clean, split == FALSE)
-
-split <- sample.split(train_val_data$like, SplitRatio = ratioTrainValidation)
-train_set <- subset(train_val_data, split == TRUE)
-val_set <- subset(train_val_data, split == FALSE)
-
-print("Table 2. Total posts training data set")
-train_set
-```
-
-#### Unpaid Posts:
-
-```{r}
-split <- sample.split(facebook_clean_unpaid$like, SplitRatio = partitionTrain)
-train_val_data_unpaid <- subset(facebook_clean_unpaid, split == TRUE)
-test_set_unpaid <- subset(facebook_clean_unpaid, split == FALSE)
-
-split <- sample.split(train_val_data_unpaid$like, SplitRatio = ratioTrainValidation)
-train_set_unpaid <- subset(train_val_data_unpaid, split == TRUE)
-val_set_unpaid <- subset(train_val_data_unpaid, split == FALSE)
-
-print("Table 3. Unpaid posts training data set")
-train_set_unpaid
-```
-
-
-#### ii) Training Data Summaries
-
-- Number of observations of each type
-- Mean and Median of key metrics in each post type
-
-#### Summary of Unpaid Posts:
-
-```{r}
-summ_train_unpaid <- train_set_unpaid %>%
-    group_by(Type) %>%
-    summarise(
-        count = n(),
-        mean_comment = mean(comment), 
-        median_comment = median(comment), 
-        mean_like = mean(like),
-        median_like = median(like),
-        mean_Total_Interactions = mean(Total_Interactions),
-        median_Total_Interactions = median(Total_Interactions),
-        mean_share = mean(share),
-        median_share = median(share)) %>%
-    suppressMessages()
-
-print("Table 4. Summary of unpaid posts")
-summ_train_unpaid
-```
-
----
-
-### c) Preprocessing 
-
-#### i) Preliminary Data Analysis
+### Preliminary Data Analysis
 
 To inform our analysis later on, we first conducted a preliminary exploration of our dataset.
 
-In order to gain more insight on the relationship between each type of post and the magnitude of its interactions, we started by taking the mean value of each interaction type with respect to each post type.
+In order to gain more insight on the relationship between each type of post and the magnitude of its interactions, we started by taking the mean value of each interaction type with respect to each post type. Then we compare the likes per post type as seen in figure __
 
-```{r}
-mean_comment <- summ_train_unpaid$mean_comment
-mean_like <- summ_train_unpaid$mean_like
-mean_Total_Interactions <- summ_train_unpaid$mean_Total_Interactions
-mean_share <- summ_train_unpaid$mean_share
-type <- summ_train_unpaid$Type
-
-test_df <- data.frame(type,
-                      mean_comment,
-                      mean_like,
-                      mean_share,
-                      mean_Total_Interactions)
-
-print("Table 5. Mean interactions for different types of posts")
-test_df
-
-fb_long <- test_df %>%
-gather("Stat", "Value", -type)
-
-print("Table 6. Mean interactions for different types of posts pivoted")
-fb_long
-```
-
-To compare how many likes, each post receives, we can filter the above table to only show likes.
-
-```{r}
-filter_mean_like <- fb_long %>%
-    filter(Stat == "mean_like") %>%
-    arrange(desc(Value))
-
-print("Table 7. Mean likes for different types of posts")
-filter_mean_like
-```
-
-We can see from the above table that videos tend to receive the most likes on average, while links tend to receive the fewest.
-We can compare these values by plotting them on a bar graph.
-
-```{r}
-options(repr.plot.width = 8, repr.plot.height = 6) 
-
-mean_likes_bar <- ggplot(filter_mean_like, aes(x = type, y = Value, fill = type)) +
-    geom_bar(stat = "identity") +
-    labs(x = "Post Type", y = "Mean Number of Likes",
-         title = "Figure 1. Mean number of likes per post type") +
-    theme(text = element_text(size = 20)) 
-mean_likes_bar
+```{r meanLikesByPostType, echo=FALSE, fig.cap="Mean likes by post type"}
+knitr::include_graphics("../../results/01_meanLikesByPostType.png")
 ```
 
 We can see from the graph above that videos tend to receive significantly more likes than other post types. Additionally, photos and status posts receive similar number of likes compared to each other. Links receive significantly fewer likes than all other types of posts.
 <p>
 If we repeat this process without filtering for likes, we can compare the engagement per post across all types of engagement.
 
-```{r}
-options(repr.plot.width=10, repr.plot.height=10)
-
-mean_fb <- ggplot(fb_long, aes(x = type, y = Value, fill = Stat)) +
-    geom_col(position = "dodge") +
-    labs(x = "Type of Post", y = "Count", title="Figure 2. Mean interactions per post type") +
-    scale_fill_discrete(name = "Stats",
-                        labels = c("Mean Comment",
-                                   "Mean Like",
-                                   "Mean Share",
-                                   "Mean Total Interactions"))+
-    theme(text = element_text(size = 20))
-
-mean_fb
+```{r meanInteractionsbyPostType, echo=FALSE, fig.cap="Mean Interactions by post type"}
+knitr::include_graphics("../../results/02_meanInteractionsPostType.png")
 ```
 
 From this graph, we can see that the ratio between the amounts of engagement for different types of post are roughly equal regardless of the type of interaction.
 Additionally, all types of posts tend to receive very few comments and shares compared to the number of likes.
 
-```{r}
-unpaid_plot <- facebook_clean_unpaid %>% 
-    ggplot(aes(x = Lifetime_Post_Total_Reach/100,
-               y = Total_Interactions,
-               shape = Type,
-               color = Type,
-               fill = Type)) +
-    geom_point(alpha=0.6, size=4) +
-    labs(x = "Total reach (hundreds)", y = "Total interactions",
-         title = "Figure 3. Total reach vs total interactions", group = "Type")+
-    scale_y_continuous(limits = c(0,900)) +
-    scale_x_continuous(limits = c(0,500)) +
-    scale_shape_manual(values = c(21,22,23,24)) +
-    scale_size_manual(values=c(1,6,7,9)) +
-    theme_minimal() +
-    theme(text = element_text(size = 20))
-    options(repr.plot.width =14, repr.plot.height = 8)
-
-unpaid_plot 
+```{r totalReachVsInteractions, echo=FALSE}
+knitr::include_graphics("../../results/03_reachVsInteractions.png")
 ```
 
-#### ii) Identification of Class Imbalances
-We want to be able to identify possible class imbalances as the KNN-classification model is a lazy learning algorithm.
-Thus we need to ensure that our data set is balanced.
-We start by reviewing summary statistics and quickly visualizing the distribution of observations.
 
-```{r}
-options(repr.plot.width = 25, repr.plot.height = 15)
+## Building our Model
 
-test_unpaid_hist_1 <- train_set_unpaid %>%
-    ggplot(aes(fill=Type, x=Lifetime_Post_Total_Reach/100))+
-    geom_histogram(binwidth = 20,
-                   center = 1,
-                   boundary = NULL,
-                   alpha = 0.7,
-                   position = position_stack(vjust = 0, reverse=FALSE)) +
-    labs(x = "Total reach (hundreds)", y = "Number of posts",
-         title = "Figure 4. Total reach per type of post", fill="Type of post") +
-    scale_x_continuous(limits = c(0, 600)) +
-    scale_fill_manual(values = c("#eb1515", "#15eb15", "#1515eb", "#eb8015")) +
-    theme(text = element_text(size = 20), plot.margin = unit(c(3,3,3,3), "lines"))
-
-test_unpaid_hist_2 <- train_set_unpaid %>%
-    ggplot(aes(x=Total_Interactions, fill=Type))+
-    geom_histogram(binwidth = 20,
-                   alpha = 0.7,
-                   position = position_stack(vjust=0, reverse=FALSE)) +
-    labs(x = "Total interactions", y = "Number of posts",
-         title = "Figure 5. Total interactions per type of post", fill = "Type of post") +
-    scale_fill_manual(values = c("#eb1515", "#15eb15", "#1515eb", "#eb8015")) +
-    scale_x_continuous(limits = c(0, 600)) +
-    theme(text = element_text(size = 20), plot.margin = unit(c(3,3,3,3), "lines"))
-
-test_val_hist_1 <- val_set %>%
-    ggplot(aes(fill=Type, x=Lifetime_Post_Total_Reach/100))+
-    geom_histogram(binwidth = 20,
-                   center = 1,
-                   boundary = NULL,
-                   alpha = 0.7,
-                   position = position_stack(vjust = 0, reverse = FALSE)) +
-    labs(x = "Total reach (hundreds)", y = "Number of posts",
-         title = "Figure 6. Total reach per type of post", fill = "Type of post") +
-    scale_x_continuous(limits = c(0, 600)) +
-    scale_fill_manual(values = c("#eb1515", "#15eb15", "#1515eb", "#eb8015")) +
-    theme(text = element_text(size = 20), plot.margin = unit(c(3,3,3,3), "lines"))
-
-test_val_hist_2 <- val_set %>%
-    ggplot(aes(x=Total_Interactions, fill=Type))+
-    geom_histogram(binwidth = 20,
-                   alpha = 0.7,
-                   position = position_stack(vjust = 0, reverse = FALSE)) +
-    labs(x = "Total interactions", y = "Number of posts",
-         title = "Figure 7. Number of Posts vs Total Interactions", fill = "Type of post") +
-    scale_fill_manual(values = c("#eb1515", "#15eb15", "#1515eb", "#eb8015")) +
-    scale_x_continuous(limits = c(0, 600)) +
-    theme(text = element_text(size = 20), plot.margin = unit(c(3,3,3,3), "lines"))
-
-
-grid.arrange(test_unpaid_hist_1, test_val_hist_1, test_unpaid_hist_2, test_val_hist_2, ncol=2,
-             top = textGrob(expression(bold("Distributions: Training (Left), Validation (Right)")),
-                            x =0, hjust=0, gp=gpar(fontsize = 24)))
-```
-
-#### iii) Balancing Decision
-
-We see the distribution of the type of posts is not equal so we should consider balancing.
-However, this introduces potential complications in further parts of our analysis, mainly the cross-validation step.
-We find that balancing our data in this part of our analysis results in overestimated accuracies for our cross-validation model later on.
-Additionally, we are hesitant to balance the training set because this alternation is not reflected in our testing set, which can lead to more uncertainty.
-Because of these factors, we chose to leave our data unbalanced.
-We believe this will lead to less biased results when using our training data set further in our report.
-
----
-
-### d) Building our Model
-
-#### i) Overview
+### Overview
 We use the original training data into our tuning selection process.
 Then by scaling the data and following the tidymodel recipes workflow, we collect the results from various values of $k$.
 Our base value of $k$ is set to 3.
 
-## (06_KNN Script)
-
-```{r}
-knn_spec <- nearest_neighbor(weight_func = "rectangular", neighbors = 3) %>%
-      set_engine("kknn") %>%
-      set_mode("classification")
-
-unpaid_recipe <- recipe(Type ~ 
-                        Lifetime_Post_Total_Reach + Total_Interactions,
-                        data = train_set_unpaid) %>%
-                    step_scale(all_predictors()) %>%
-                    step_center(all_predictors())
-
-unpaid_fit <- workflow() %>%
-    add_recipe(unpaid_recipe) %>%
-    add_model(knn_spec) %>%
-    fit(data = train_set_unpaid)
-
-unpaid_val_predicted <- predict(unpaid_fit, val_set_unpaid) %>%
-    bind_cols(val_set_unpaid)
-
-unpaid_prediction_accuracy <- unpaid_val_predicted %>%
-    metrics(truth = Type, estimate = .pred_class)
-
-print("Table 8. Prediction accuracy for unpaid posts using k=3")
-unpaid_prediction_accuracy
-
-unpaid_val_predicted %>%
-    conf_mat(truth = Type, estimate = .pred_class)
-```
-
 Our pre-tuned model accuracy against our validation set was roughly 83%. The low accuracy is connected with the collection of observations within the validation data set itself. Our validation set which was sampled at random had only included observations from 2 types: Photo and Status. Upon running our model against this sample population, the collection of predictions included observations from the Link category as well thus creating inaccuracy in our model. In the following steps, we will hopefully tune and increase our base accuracy while accounting for the small sample of the validation set.
 
-#### ii) Tuning
+### Tuning
 
 1. We will perform the cross-validation technique with 10 folds to account for randomness.
-
-```{r}
-set.seed(99)
-unpaid_vfold <- vfold_cv(train_set_unpaid, v = 10, strata = Type)
-
-unpaid_fit_v2 <- workflow() %>%
-    add_recipe(unpaid_recipe) %>%
-    add_model(knn_spec) %>%
-    fit_resamples(resamples = unpaid_vfold) %>% collect_metrics() %>%
-    suppressMessages()
-
-print("Table 9. Average model accuracy using 10 fold cross-validation")
-unpaid_fit_v2
-```
 
 Through a 10 fold cross-validation method, the accuracy of our model averages to approximately 87%. Given a standard error of roughly 0.01, our estimated true average accuracy falls between $[0.86, 0.88]$. The increase in accuracy can be explained through the choice of data used in the "vfold()" function. The validation set created from the **vfold()** function splits our training data into subsections while the prediction model compares the validation set against the predicted values. Thus with a better holistic representation of our sample, our accuracy increases.
 
 2. Next we will perform a parameterization selection method to select a better value for K.
 
-```{r}
-knn_tune <- nearest_neighbor(weight_func = "rectangular", neighbors = tune()) %>%
-    set_engine("kknn") %>%
-    set_mode("classification") 
-
-knn_results <- workflow() %>%
-    add_recipe(unpaid_recipe) %>%
-    add_model(knn_tune) %>%
-    tune_grid(resamples = unpaid_vfold, grid = 10) %>% 
-    collect_metrics() %>%
-    suppressMessages()
-
-accuracies <- knn_results %>% 
-    filter(.metric == "accuracy")
-
-print("Table 10. Prediction accuracies of models using different values for k")
-accuracies
-```
 
 3. Then using our collected metrics, we can visualize our accuracies to refine our value of K.
 
-```{r}
-options(repr.plot.width=15, repr.plot.height=8)
-
-accuracy_versus_k <- ggplot(accuracies, aes(x = neighbors, y = mean))+
-    geom_point() +
-    geom_line() +
-    labs(x = "Neighbors", y = "Accuracy Estimate",
-         title = "Figure 8. K-NN Classification Accuracy by Neighbors") +
-    scale_x_continuous(breaks = seq(0, 16, by = 2)) +  # adjusting the x-axis
-    scale_y_continuous(limits = c(0.8, 1.0)) + # adjusting the y-axis
-    theme(text = element_text(size = 20))
-
-accuracy_versus_k
+```{r knnAccuracy, echo=FALSE}
+knitr::include_graphics("../../results/04_KNN_ACCURACY.png")
 ```
 
-```{r}
-print("Table 11. Highest prediction accuracy from tuned models")
-most_accurate_k <- knn_results %>% filter(.metric == "accuracy") %>% arrange(desc(mean)) %>% slice(1)
-most_accurate_k
-```
-
-The visualization suggests that $k=9$ averages the highest accuracy of ~88% from our 10 cross-validation sets.
+The visualization suggests that $k=12$ averages the highest accuracy of ~88% from our 10 cross-validation sets.
 We edit our model specification to take $k=9$ instead of $k=3$ as follows.
 After doing so, we can compare the accuracy of each model.
 
-#### iii) Accuracy Comparison
+## Results
 
-```{r}
-# we use the same recipe, change spec
-
-knn_spec <- nearest_neighbor(weight_func = "rectangular", neighbors = 9) %>%
-    set_engine("kknn") %>%
-    set_mode("classification")
-
-unpaid_fit_tuned <- workflow() %>%
-    add_recipe(unpaid_recipe) %>%
-    add_model(knn_spec) %>%
-    fit(data = train_set_unpaid)
-
-unpaid_val_predicted_tuned <- predict(unpaid_fit_tuned, val_set_unpaid) %>%
-    bind_cols(val_set_unpaid)
-
-unpaid_prediction_accuracy_tuned <- unpaid_val_predicted_tuned %>%
-    metrics(truth = Type, estimate = .pred_class) %>% filter(.metric == "accuracy")
-
-model_improvement <- unpaid_prediction_accuracy_tuned$.estimate - unpaid_prediction_accuracy$.estimate
-
-print("Table 12. Tuned prediction accuracy using k=9")
-unpaid_prediction_accuracy_tuned
-
-print("Model improvement:")
-print(model_improvement)
-```
-
----
-
-### e) Analysis
-
-#### i) Classifying a New Observation
-
-In this section, we use the results of our accuracy model to predict the class of a new observation. Since our two predictors, `Total Interactions` and `Lifetime_Post_Total_Reach`, have a largely different range of values, we first centered and scaled them. 
-
-```{r}
-new_obs_total_interactions <- 4
-new_obs_total_reach <- 2
-
-fb_recipe <- recipe(Type ~
-                    Total_Interactions + Lifetime_Post_Total_Reach,
-                    data=facebook_clean_unpaid) %>%
-  step_scale(all_predictors()) %>%
-  step_center(all_predictors()) %>%
-  prep()
-
-scaled_fb_unpaid <- bake(fb_recipe, facebook_clean_unpaid)
-
-print("Table 13. 9 nearest neighbours to new observation, arranged by dstance")
-scaled_fb_unpaid %>%
-  dplyr::select(Total_Interactions, Lifetime_Post_Total_Reach, Type) %>%
-  mutate(dist_from_new = sqrt((Total_Interactions - new_obs_total_interactions)^2 +
-                              (Lifetime_Post_Total_Reach - new_obs_total_reach)^2)) %>%
-  arrange(dist_from_new) %>%
-  slice(1:9)
-
-new_obs <- tibble(Total_Interactions = 4, Lifetime_Post_Total_Reach = 2)
-
-print("Prediction for new observation:")
-predict(unpaid_fit_tuned, new_obs)$.pred_class[1]
-```
-
-Since our predictors are scaled, their output values are also expressed in their scaled form.
-As such, the values for our 9 $k$ nearest neighbours might appear different from the values  we used to predict the class of the new observation.
-However, the results still help us identify the 9 nearest neighbours, which we can then use to predict the class of the new observation.
-The results of our model predict that the new observation is a **Photo.**
-
-```{r}
-#Prediction plot for our new observation
-new_prediction_plot <-
-    ggplot()+
-    geom_point(data = scaled_fb_unpaid, 
-               mapping = aes(x = Lifetime_Post_Total_Reach,
-               y = Total_Interactions,
-               color = Type), 
-               alpha=1, size=2) +
-    labs(x = "Total reach (hundreds)", y = "Total interactions",
-               title = "Figure 9. 9 Nearest Neighbours to New Observation")+
-    theme(text=element_text(size=20)) +
-    geom_segment(aes(x = 2, y = 4, xend = 2.895676, yend = 3.769853), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 2.221724, yend = 4.970207), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 1.071736, yend = 4.377817), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 1.921900, yend = 2.950514), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 1.341339, yend = 3.018103), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 2.101635, yend = 2.521131), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 1.118658, yend = 2.314391), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 2.829325, yend = 5.713676), alpha = 0.5)+
-    geom_segment(aes(x = 2, y = 4, xend = 1.345315, yend = 1.996329), alpha = 0.5)+
-    geom_point(aes(x = 2, y = 4)) +
-    annotate("text", x = 2.6, y =  4.2, label = "↙ New Observation")
-
-new_prediction_plot 
-```
-
-Here, we can see that all 9 $k$ nearest neighbours are of type **Photo**.
-
-#### Prediction Possibilities
-
-Here, we explore how a new observation might be classified based on a given set of predictor values.
-
-```{r}
-#A visualization for the prediction possibilities
-options(repr.plot.width =14, repr.plot.height = 8) 
-
-reach_grid <- seq(min(facebook_clean_unpaid$Lifetime_Post_Total_Reach),
-                  max(facebook_clean_unpaid$Lifetime_Post_Total_Reach),
-                  length.out = 100)
-
-interactions_grid <- seq(min(facebook_clean_unpaid$Total_Interactions),
-                         max(facebook_clean_unpaid$Total_Interactions),
-                         length.out = 100)
-
-asgrid <- as_tibble(expand.grid(Lifetime_Post_Total_Reach=reach_grid,
-                                Total_Interactions=interactions_grid))
-
-knnPredGrid <- predict(unpaid_fit, asgrid)
-
-prediction_table <- bind_cols(knnPredGrid, asgrid) %>% rename(Type = .pred_class)
-
-wkflw_plot <-
-    ggplot()+
-    geom_point(data = facebook_clean_unpaid, 
-               mapping = aes(x = Lifetime_Post_Total_Reach/100,
-               y = Total_Interactions,
-               color = Type), 
-               alpha=1, size=2) +
-    geom_point(data = prediction_table, 
-               mapping = aes(x = Lifetime_Post_Total_Reach/100,
-               y = Total_Interactions,
-               color = Type),
-               alpha=0.09, size=6.)+
-    labs(x = "Total reach (hundreds)", y = "Total interactions",
-         title = "Figure 10. Prediction Possibilities")+
-    scale_y_continuous(limits = c(0,900)) +
-    scale_x_continuous(limits = c(0,1500)) +
-    theme(text=element_text(size=20))
-
-wkflw_plot
-```
-
-This plot shows us how a new observation will be classified based on values for Total interactions and Total reach. An observation in the green area will be classified as a **Link**, a new observation in the green area will be classified as a **Photo**, and so on.
-
----
-
-### f) Results
-
-After changing our model spec from $k$ = 3 to $k$ = 9, we see that the modifications to our model have increased our accuracy by *8.3%*, (i.e., from *83.33%* to *91.67%*) and thus we will choose the tuned model.
+After changing our model spec from $k$ = 3 to $k$ = 12, we see that the modifications to our model have increased our accuracy by *8.3%*, (i.e., from *83.33%* to *91.67%*) and thus we will choose the tuned model.
 
 A possible reason the unusually high value of $k$ may lie within the validation data set. As previously discussed, the validation set was a poor holistic representation of our sample and to account for false positives, the model produced a higher critical value.
 
@@ -742,11 +195,9 @@ This variable affects the length of time being promoted and the scope that targe
 We also used the variables "total interactions", which is the aggregation of the variables "like", "share", and "comment", and "lifetime total reach" which refers to the number of views, as predictors to predict the type of post.
 Based on our tuned model, we can predict which type of post will be successful with an accuracy of 91.67%.
 
----
+# Discussion
 
-## 3. Discussion
-
-Our model has shown the most accuracy with a $k$ value of 9 and with an accuracy of 91.67%.
+Our model has shown the most accuracy with a $k$ value of 12 and with an accuracy of 91.67%.
 We ran into the problem of an unbalanced dataset where videos, links, and statuses made up only 54 of 264 total observations.
 Our model decided to acknowledge this unbalance and leave it as is for the reason that by balancing it, it drastically biased our model to produce a very high accuracy rate (roughly 96%).
 Considering that without balancing the dataset, the accuracy rate of our model at 91.67% was good enough. 
@@ -754,18 +205,11 @@ Considering that without balancing the dataset, the accuracy rate of our model a
 As our research question asks which type of posts will be the most successful, our model first demonstrated the positive relationship between total impressions and total reach by type of posts which allowed to use them as our two main predictors.
 Our model showed that as total reach increases total impressions (likes, shares, comments) are likely to increase as well.
 Therefore, the underlying logic of our question is which type of post is likely to have the most reach, but as the type of content, such as videos or links, affects the likeliness of generating likes and comments which, in turns, is more likely to be picked up by Facebook's algorithm to then become viral.
-Thus, it creates a positive feedback loop as viral posts, if made public, increase Facebook's placement of the post in user's newsfeed resulting in an increased reach (Quesenberry & Coolsen, 2019).
+Thus, it creates a positive feedback loop as viral posts, if made public, increase Facebook's placement of the post in user's newsfeed resulting in an increased reach [@Quesen].
+
 Therefore, we used both total reach and total impression to predict the success of a Facebook post.
 
----
 
-## 4. References
+# References
 
-Moro, S., Rita, P., & Vala, B. (2016).
-"Predicting social media performance metrics and evaluation of the impact on brand building: A data mining approach", 
-Journal of Business Research. 69(9), 3341 - 3351. 
-
-Quesenberry, Keith A. & Coolsen, Michael K. (2019).
-"What Makes Facebook Brand Posts Engaging? A Content Analysis of Facebook Brand Post Text That Increases Shares, Likes, and Comments to Influence Organic Viral Reach",
-Journal of Current Issues & Research in Advertising, 40(3), 244-299.
 

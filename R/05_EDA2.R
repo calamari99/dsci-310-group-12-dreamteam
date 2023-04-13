@@ -60,7 +60,7 @@ main <- function(input_dir, out_dir) {
                fill = Type)) +
     geom_point(alpha=0.6, size=4) +
     labs(x = "Total reach (hundreds)", y = "Total interactions",
-         title = "Figure 3. Total reach vs total interactions", group = "Type")+
+         title = "Total reach vs total interactions", group = "Type")+
     scale_y_continuous(limits = c(0,900)) +
     scale_x_continuous(limits = c(0,500)) +
     scale_shape_manual(values = c(21,22,23,24)) +

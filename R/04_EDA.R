@@ -95,7 +95,7 @@ main <- function(input_dir,out_dir) {
     mean_likes_bar <- ggplot(filter_mean_like, aes(x = type, y = Value, fill = type)) +
         geom_bar(stat = "identity") +
         labs(x = "Post Type", y = "Mean Number of Likes",
-            title = "Figure 1. Mean number of likes per post type") +
+            title = "Mean number of likes per post type") +
         theme(text = element_text(size = 20)) 
     
 
@@ -112,7 +112,7 @@ main <- function(input_dir,out_dir) {
     ## -- build figure 2--
     mean_fb <- ggplot(fb_long, aes(x = type, y = Value, fill = Stat)) +
         geom_col(position = "dodge") +
-        labs(x = "Type of Post", y = "Count", title="Figure 2. Mean interactions per post type") +
+        labs(x = "Type of Post", y = "Count", title="Mean interactions per post type") +
         scale_fill_discrete(name = "Stats",
                             labels = c("Mean Comment",
                                     "Mean Like",

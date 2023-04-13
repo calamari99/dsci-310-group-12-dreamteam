@@ -31,4 +31,6 @@ results/03_reachVsInteractions.png: data/facebook_clean.csv R/05_EDA2.R
 results/: data/facebook_clean.csv R/06_knn.R
 	Rscript R/06_knn.R 
 
-
+#render html report from rmarkdown file
+render/facebook_report.html: render/notebook.Rmd
+	Rscript -e "rmarkdown::render('render/notebook.Rmd, bookdown::html_document2')"
