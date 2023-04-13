@@ -44,16 +44,16 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 ` docker push <userID/imagename:tagname> 
 -->
 
-4a. Copy and paste a URL that was populated in step 3 starting with:
+4a. Copy and paste the URL into a browser that was populated in step 3 starting with:
 - `http://127.0.0.1:8888/lab?token=<token>`
 
-5. Open jupyter notebook in notebooks folder and run all cells.
+5. Move to notebooks folder, open `submission.ipynb` and run all cells.
 
 ---
 
 Generate Report
 
-1. To generate report in html file move to home repository folder and run:
+1. To generate report as a html outout, move to home repository folder and run:
 - `make`
 - Note: the generated html file `notebook.html` will be populated in the notebooks/render folder
 
