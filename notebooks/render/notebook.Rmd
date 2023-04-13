@@ -8,9 +8,9 @@ bibliography: references.bib
 ---
 
 Original Analysis By: Sara Jafroudi, Enoch Cheung, Jason Ngo, Bruno Gagnon
-Reproduced by Group 12: Enoch Cheung
 
-https://github.com/calamari99/Facebook-Post-Predictor.git
+---
+Reproduced for DSCI310 project || Group 12: Enoch Cheung
 
 # Introduction
 
@@ -133,7 +133,7 @@ We have also chosen a 10-fold cross-validation procedure to establish unbiased e
 
 To inform our analysis later on, we first conducted a preliminary exploration of our dataset.
 
-In order to gain more insight on the relationship between each type of post and the magnitude of its interactions, we started by taking the mean value of each interaction type with respect to each post type. Then we compare the likes per post type as seen in figure __
+In order to gain more insight on the relationship between each type of post and the magnitude of its interactions, we started by taking the mean value of each interaction type with respect to each post type. Then we compare the likes per post type.
 
 ```{r meanLikesByPostType, echo=FALSE, fig.cap="Mean likes by post type"}
 knitr::include_graphics("../../results/01_meanLikesByPostType.png")
@@ -211,5 +211,3 @@ Therefore, we used both total reach and total impression to predict the success 
 
 
 # References
-
-

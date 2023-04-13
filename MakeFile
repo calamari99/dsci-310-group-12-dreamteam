@@ -4,7 +4,7 @@
 
 
 # 0: Run all
-all: data/facebook.csv data/facebook.csv data/train_set.csv data/test_set.csv results/01_meanLikesByPostType.png results/02_meanInteractionsPostType results/03_reachVsInteractions.png results/
+all: data/facebook.csv data/facebook.csv data/train_set.csv data/test_set.csv results/01_meanLikesByPostType.png results/02_meanInteractionsPostType results/03_reachVsInteractions.png results/ notebooks/render/notebook.html 
 
 
 # 01: Load data
@@ -32,5 +32,16 @@ results/: data/facebook_clean.csv R/06_knn.R
 	Rscript R/06_knn.R 
 
 #render html report from rmarkdown file
-render/facebook_report.html: render/notebook.Rmd
-	Rscript -e "rmarkdown::render('render/notebook.Rmd, bookdown::html_document2')"
+notebooks/render/notebook.html: notebooks/render/notebook.Rmd
+	Rscript -e "rmarkdown::render('notebooks/render/notebook.Rmd', 'bookdown::html_document2')"
+
+
+#delete generated figs, data, vars
+.PHONY: clean
+clean:
+	rm -f results/*.png
+	rm -f data/*rds
+	rm -f notebooks/render/*.html
+	rm -f data/facebook_clean.csv
+	rm -f data/train_set.csv
+	rm -f data/test_set.csv
