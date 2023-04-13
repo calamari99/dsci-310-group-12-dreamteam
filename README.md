@@ -50,6 +50,15 @@ The analysis report is attached [here](https://github.com/calamari99/Facebook-Po
 
 5a. Open jupyter notebook in notebooks folder and run all cells.
 
+6. To generate report in html file move to home repository folder and run:
+- `make`
+- Note: the generated html file `notebook.html` is located in notebooks/render folder
+
+7. To remove all outputs (vars/data/results) move to home repository folder and run:
+`make clean`
+
+
+
 
 ## License
 MIT license for project analysis
