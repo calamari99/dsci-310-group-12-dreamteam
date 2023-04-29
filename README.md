@@ -1,5 +1,5 @@
 # dsci-310-group-12-dreamteam
-- Authors: Enoch Cheung
+- Authors: Enoch Cheung, Lulu Wang, Esther Hsueh
 
 Demo of Facebook-Post-Predictor from DSCI100.
 
