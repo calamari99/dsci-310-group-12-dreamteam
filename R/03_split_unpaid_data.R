@@ -31,7 +31,7 @@ library(tidyverse)
 library(tidymodels)
 library(caTools)
 
-#final project library
+#final project library for splits function
 devtools::install_github("DSCI-310/dsci-310-group-12-pkg")
 library(testpkg)
 
@@ -56,12 +56,12 @@ main <- function(input_dir, out_dir) {
     colnames(facebook_clean_unpaid) <- name_temp_vec
 
     #split test
-    split <- testpkg::splits(facebook_clean_unpaid$like, SplitRatio = partitionTrain)
+    split <- testpkg::splits(facebook_clean_unpaid$like, ratio = partitionTrain)
     train_val_data_unpaid <- subset(facebook_clean_unpaid, split == TRUE)
     test_set_unpaid <- subset(facebook_clean_unpaid, split == FALSE)
 
     #split train
-    split <- testpkg::splits(train_val_data_unpaid$like, SplitRatio = ratioTrainValidation)
+    split <- testpkg::splits(train_val_data_unpaid$like, ratio = ratioTrainValidation)
     train_set_unpaid <- subset(train_val_data_unpaid, split == TRUE)
     val_set_unpaid <- subset(train_val_data_unpaid, split == FALSE)
 
