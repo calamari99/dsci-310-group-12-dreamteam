@@ -13,6 +13,9 @@ Options:
 library(dplyr)
 library(docopt)
 library(readr)
+#final project library for splits function
+devtools::install_github("DSCI-310/dsci-310-group-12-pkg")
+library(testpkg)
 
 opt <- docopt(doc)
 
@@ -28,14 +31,17 @@ main <- function(input_dir, out_dir) {
   
   facebook_clean_unpaid <- facebook_clean %>% filter(Paid == 0)
   facebook_clean_paid <- facebook_clean %>% filter(Paid == 1)
-  
+
   # Summary of unpaid posts by type
-  unpaid_summary <- facebook_clean_unpaid %>% group_by(Type) %>% 
-    summarise(unpaid = n()) 
+
+  unpaid_summary <- summariseByCol(facebook_clean_unpaid,"Type")
+  paid_summary <- summariseByCol(facebook_clean_unpaid,"Type")
   
-  # Summary of paid posts by type
-  paid_summary <- facebook_clean_paid %>% group_by(Type) %>% 
-    summarise(paid = n())
+  # paid_summary <- facebook_clean_paid %>% group_by(Type) %>% 
+  #   summarise(paid = n())
+
+  # unpaid_summary <- facebook_clean_unpaid %>% group_by(Type) %>% 
+  #   summarise(unpaid = n()) 
   
   Reduce(dplyr::full_join, list(unpaid_summary, paid_summary)) %>%
     suppressMessages()
